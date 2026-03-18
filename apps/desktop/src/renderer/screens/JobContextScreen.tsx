@@ -1,66 +1,155 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Play } from 'lucide-react'
 
 export function JobContextScreen() {
   const navigate = useNavigate()
 
+  const [company, setCompany] = useState('')
+  const [companyError, setCompanyError] = useState('')
+  const [jobUrl, setJobUrl] = useState('')
+  const [description, setDescription] = useState('')
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!company.trim()) {
+      setCompanyError('Company name is required')
+      return
+    }
+    navigate('/session')
+  }
+
+  const inputClass =
+    'w-full rounded-xl border-2 border-primary/20 bg-navy-800 h-14 px-4 ' +
+    'text-slate-100 placeholder:text-slate-500 outline-none transition-colors ' +
+    'focus:border-primary focus:ring-2 focus:ring-primary/20'
+
   return (
-    <div className="flex h-full flex-col items-center justify-center p-8">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="space-y-1">
-          <h2 className="text-xl font-semibold text-white">Job Details</h2>
-          <p className="text-sm text-slate-400">Add context to get better answers</p>
+    <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-navy-900 text-slate-100">
+      {/* Background glow */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute -right-1/4 -top-1/4 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute -bottom-1/4 -left-1/4 h-[400px] w-[400px] rounded-full bg-primary/5 blur-[100px]" />
+      </div>
+
+      {/* Top app bar */}
+      <header className="sticky top-0 z-10 flex items-center justify-between bg-navy-900/90 px-4 py-3 backdrop-blur-sm border-b border-primary/10">
+        <button
+          type="button"
+          onClick={() => navigate('/onboarding')}
+          aria-label="Go back"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </button>
+
+        <h2 className="flex-1 text-center text-lg font-bold tracking-tight pr-10">
+          Interview Setup
+        </h2>
+
+        <div className="flex items-center gap-2">
+          <div className="h-1.5 w-16 overflow-hidden rounded-full bg-primary/20">
+            <div className="h-full w-2/3 rounded-full bg-primary" />
+          </div>
+          <span className="text-xs font-medium uppercase tracking-wider text-primary/70 whitespace-nowrap">
+            Step 2 of 3
+          </span>
+        </div>
+      </header>
+
+      {/* Heading */}
+      <div className="px-6 pb-4 pt-8">
+        <h1 className="mb-2 text-3xl font-bold tracking-tight">Job Context</h1>
+        <p className="text-base leading-normal text-slate-400">
+          Provide details about the role to help your co-pilot prepare for your
+          specific interview.
+        </p>
+      </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6 px-6 py-4">
+        {/* Company Name */}
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="company-name"
+            className="text-sm font-semibold uppercase tracking-wider text-slate-300"
+          >
+            Company Name <span className="text-primary">*</span>
+          </label>
+          <input
+            id="company-name"
+            type="text"
+            value={company}
+            onChange={(e) => {
+              setCompany(e.target.value)
+              if (companyError) setCompanyError('')
+            }}
+            placeholder="e.g. Google, Stripe, or Startup Inc."
+            className={inputClass}
+            aria-describedby={companyError ? 'company-error' : undefined}
+          />
+          {companyError && (
+            <p id="company-error" role="alert" className="text-sm text-red-400">
+              {companyError}
+            </p>
+          )}
         </div>
 
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-xs font-medium uppercase tracking-wider text-slate-400">
-              Job URL <span className="normal-case text-slate-500">(optional)</span>
-            </label>
-            <input
-              type="url"
-              placeholder="https://jobs.example.com/..."
-              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-            />
-          </div>
+        {/* Job URL */}
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="job-url"
+            className="text-sm font-semibold uppercase tracking-wider text-slate-300"
+          >
+            Job URL{' '}
+            <span className="normal-case text-slate-500 font-normal">(Optional)</span>
+          </label>
+          <input
+            id="job-url"
+            type="url"
+            value={jobUrl}
+            onChange={(e) => setJobUrl(e.target.value)}
+            placeholder="https://linkedin.com/jobs/..."
+            className={inputClass}
+          />
+        </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-medium uppercase tracking-wider text-slate-400">
-              Job Title
-            </label>
-            <input
-              type="text"
-              placeholder="Senior Software Engineer"
-              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-xs font-medium uppercase tracking-wider text-slate-400">
+        {/* Job Description */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="job-description"
+              className="text-sm font-semibold uppercase tracking-wider text-slate-300"
+            >
               Job Description
             </label>
-            <textarea
-              rows={5}
-              placeholder="Paste the job description here..."
-              className="w-full resize-none rounded-lg border border-navy-600 bg-navy-800 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-            />
+            <span className="text-xs italic text-slate-500">
+              Paste full text for better accuracy
+            </span>
           </div>
+          <textarea
+            id="job-description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Paste the job requirements, responsibilities, and qualifications here..."
+            className="w-full resize-none rounded-xl border-2 border-primary/20 bg-navy-800 p-4 text-slate-100 placeholder:text-slate-500 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 min-h-[280px] leading-relaxed"
+          />
         </div>
 
-        <div className="flex gap-3">
+        {/* Action footer */}
+        <div className="mt-4 pb-12">
           <button
-            onClick={() => navigate('/onboarding')}
-            className="flex-1 rounded-lg border border-navy-600 px-4 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:border-slate-500 hover:text-white focus:outline-none"
+            type="submit"
+            className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 font-bold text-lg text-white shadow-lg shadow-primary/20 transition-colors hover:bg-primary/90"
           >
-            ← Back
+            Start Session
+            <Play className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
           </button>
-          <button
-            onClick={() => navigate('/session')}
-            className="flex-1 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-navy-900"
-          >
-            Start Session →
-          </button>
+          <p className="mt-4 text-center text-sm text-slate-500">
+            Your data is used only to personalize the co-pilot session.
+          </p>
         </div>
-      </div>
+      </form>
     </div>
   )
 }
