@@ -9,6 +9,7 @@ export default {
     extend: {
       colors: {
         // Interview Copilot design system
+        primary: '#0da6f2',
         navy: {
           900: '#0a0f1e',
           800: '#0f172a',
