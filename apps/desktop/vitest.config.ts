@@ -18,6 +18,7 @@ export default defineConfig({
         branches: 80,
         statements: 80,
       },
+      include: ['src/renderer/**', 'src/shared/**'],
       exclude: [
         'node_modules/**',
         'src/test-setup.ts',
@@ -25,6 +26,7 @@ export default defineConfig({
         '**/*.d.ts',
         'dist/**',
         'release/**',
+        'src/renderer/main.tsx',
       ],
     },
   },
