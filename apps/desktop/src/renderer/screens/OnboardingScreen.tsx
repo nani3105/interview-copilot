@@ -132,7 +132,7 @@ export function OnboardingScreen() {
                     if (nameError) setNameError('')
                   }}
                   placeholder="e.g. John Doe"
-                  className="w-full rounded-xl border-2 border-primary/20 bg-primary/5 py-4 pl-12 pr-4 text-slate-100 outline-none placeholder:text-slate-600 transition-colors focus:border-primary"
+                  className="w-full rounded-xl border-2 border-primary/20 bg-navy-800 py-4 pl-12 pr-4 text-slate-100 outline-none placeholder:text-slate-500 transition-colors focus:border-primary"
                   aria-describedby={nameError ? 'name-error' : undefined}
                 />
               </div>
