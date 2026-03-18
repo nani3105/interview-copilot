@@ -13,6 +13,10 @@ concurrency:
 env:
   NODE_VERSION: '20'
   WORKING_DIR: apps/desktop
+  # Skip Electron binary download (not needed for lint/test/build)
+  ELECTRON_SKIP_BINARY_DOWNLOAD: 1
+  # Skip better-sqlite3 native compilation in CI
+  npm_config_build_from_source: false
 
 jobs:
   lint-and-typecheck:
@@ -31,10 +35,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install dependencies (skip Electron download + native builds)
-        run: npm ci --ignore-scripts
+      - name: Install build tools
+        run: sudo apt-get install -y python3 make g++
+        working-directory: .
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
+
+      - name: Verify bin directory
+        run: ls node_modules/.bin | grep -E "eslint|vite|vitest|tsc" || echo "Binaries not found in node_modules/.bin"
 
       - name: Run ESLint
         run: npm run lint
@@ -58,8 +69,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install dependencies (skip Electron download + native builds)
-        run: npm ci --ignore-scripts
+      - name: Install build tools
+        run: sudo apt-get install -y python3 make g++
+        working-directory: .
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
 
@@ -98,8 +113,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install dependencies (skip Electron download + native builds)
-        run: npm ci --ignore-scripts
+      - name: Install build tools
+        run: sudo apt-get install -y python3 make g++
+        working-directory: .
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
 
