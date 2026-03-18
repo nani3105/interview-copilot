@@ -44,8 +44,10 @@ jobs:
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
 
-      - name: Verify bin directory
-        run: ls node_modules/.bin | grep -E "eslint|vite|vitest|tsc" || echo "Binaries not found in node_modules/.bin"
+      - name: Show crash log if install failed
+        if: failure()
+        run: find /home/runner/.npm/_logs -name "*.log" -exec tail -100 {} \;
+        working-directory: .
 
       - name: Run ESLint
         run: npm run lint
