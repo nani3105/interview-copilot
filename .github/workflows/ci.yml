@@ -27,19 +27,19 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
+      - name: Install build tools (for native modules)
+        run: sudo apt-get install -y python3 make g++
+
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Add root bin to PATH
-        run: echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH
-
       - name: Run ESLint
         working-directory: apps/desktop
-        run: eslint src --ext .ts,.tsx --max-warnings 0
+        run: npx --prefix ../../ eslint src --ext .ts,.tsx --max-warnings 0
 
       - name: Run TypeScript check
         working-directory: apps/desktop
-        run: tsc --noEmit
+        run: npx --prefix ../../ tsc --noEmit
 
   test:
     name: Tests & Coverage
@@ -54,15 +54,15 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
+      - name: Install build tools (for native modules)
+        run: sudo apt-get install -y python3 make g++
+
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Add root bin to PATH
-        run: echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH
-
       - name: Run tests with coverage
         working-directory: apps/desktop
-        run: vitest run --coverage
+        run: npx --prefix ../../ vitest run --coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -93,16 +93,16 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
+      - name: Install build tools (for native modules)
+        run: sudo apt-get install -y python3 make g++
+
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Add root bin to PATH
-        run: echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH
-
       - name: Build Vite renderer
         working-directory: apps/desktop
-        run: vite build
+        run: npx --prefix ../../ vite build
 
       - name: TypeScript check (main process)
         working-directory: apps/desktop
-        run: tsc -p tsconfig.main.json --noEmit
+        run: npx --prefix ../../ tsc -p tsconfig.main.json --noEmit
