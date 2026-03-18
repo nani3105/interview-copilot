@@ -10,6 +10,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  NODE_VERSION: '20'
+
 jobs:
   lint-and-typecheck:
     name: Lint & Type Check
@@ -20,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
@@ -28,12 +31,10 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Run ESLint
-        working-directory: apps/desktop
-        run: npm run lint
+        run: npm run lint -w @interview-copilot/desktop
 
       - name: Run TypeScript check
-        working-directory: apps/desktop
-        run: npm run typecheck
+        run: npm run typecheck -w @interview-copilot/desktop
 
   test:
     name: Tests & Coverage
@@ -44,7 +45,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
@@ -52,8 +53,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Run tests with coverage
-        working-directory: apps/desktop
-        run: npm run test:coverage
+        run: npm run test:coverage -w @interview-copilot/desktop
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -80,17 +80,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Build Vite (renderer)
-        working-directory: apps/desktop
-        run: npm run build:vite
+      - name: Build Vite renderer
+        run: npm run build:vite -w @interview-copilot/desktop
 
-      - name: Build Electron main (type compile)
+      - name: TypeScript check (main process)
         working-directory: apps/desktop
-        run: npx tsc -p tsconfig.main.json --noEmit
+        run: ../../node_modules/.bin/tsc -p tsconfig.main.json --noEmit
