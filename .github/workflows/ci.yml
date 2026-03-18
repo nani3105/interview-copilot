@@ -31,12 +31,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install build tools
-        run: sudo apt-get install -y python3 make g++
-        working-directory: .
-
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+      - name: Install dependencies (skip Electron download + native builds)
+        run: npm ci --ignore-scripts
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
 
       - name: Run ESLint
         run: npm run lint
@@ -60,12 +58,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install build tools
-        run: sudo apt-get install -y python3 make g++
-        working-directory: .
-
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+      - name: Install dependencies (skip Electron download + native builds)
+        run: npm ci --ignore-scripts
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
 
       - name: Run tests with coverage
         run: npm run test:coverage
@@ -102,12 +98,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install build tools
-        run: sudo apt-get install -y python3 make g++
-        working-directory: .
-
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+      - name: Install dependencies (skip Electron download + native builds)
+        run: npm ci --ignore-scripts
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
 
       - name: Build Vite renderer
         run: npm run build:vite
