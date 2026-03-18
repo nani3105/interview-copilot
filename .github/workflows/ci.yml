@@ -36,7 +36,22 @@ jobs:
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
       - name: Install dependencies
+        id: install
         run: npm ci --legacy-peer-deps
+        continue-on-error: true
+
+      - name: Print npm crash log if install failed
+        if: steps.install.outcome == 'failure'
+        run: |
+          echo "=== NPM CRASH LOG ==="
+          find /home/runner/.npm/_logs -name "*.log" 2>/dev/null | head -1 | xargs tail -100 2>/dev/null || echo "No log found"
+          echo "=== INSTALLED PACKAGES ==="
+          ls node_modules 2>/dev/null | head -20 || echo "node_modules empty"
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Fail if install failed
+        if: steps.install.outcome == 'failure'
+        run: exit 1
 
       - name: Run ESLint
         run: npm run lint
