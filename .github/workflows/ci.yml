@@ -11,12 +11,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: '20'
   WORKING_DIR: apps/desktop
-  # Disable all postinstall/lifecycle scripts in CI
-  # This prevents native module compilation (canvas, better-sqlite3, electron, etc.)
-  # while STILL creating node_modules/.bin symlinks (bin linking ≠ lifecycle scripts)
-  npm_config_ignore_scripts: 'true'
+  PNPM_VERSION: '10'
+  NODE_VERSION: '20'
 
 jobs:
   lint-and-typecheck:
@@ -28,36 +25,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
+          cache: 'pnpm'
+          cache-dependency-path: ${{ env.WORKING_DIR }}/pnpm-lock.yaml
 
       - name: Install dependencies
-        id: install
-        run: npm ci --legacy-peer-deps
-        continue-on-error: true
-
-      - name: Print npm crash log if install failed
-        if: steps.install.outcome == 'failure'
-        run: |
-          echo "=== NPM CRASH LOG ==="
-          find /home/runner/.npm/_logs -name "*.log" 2>/dev/null | head -1 | xargs tail -100 2>/dev/null || echo "No log found"
-          echo "=== INSTALLED PACKAGES ==="
-          ls node_modules 2>/dev/null | head -20 || echo "node_modules empty"
-        working-directory: ${{ env.WORKING_DIR }}
-
-      - name: Fail if install failed
-        if: steps.install.outcome == 'failure'
-        run: exit 1
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
 
       - name: Run ESLint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run TypeScript check
-        run: npm run typecheck
+        run: pnpm run typecheck
 
   test:
     name: Tests & Coverage
@@ -68,18 +57,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
+          cache: 'pnpm'
+          cache-dependency-path: ${{ env.WORKING_DIR }}/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
 
       - name: Run tests with coverage
-        run: npm run test:coverage
+        run: pnpm run test:coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -106,18 +102,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
+          cache: 'pnpm'
+          cache-dependency-path: ${{ env.WORKING_DIR }}/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
 
       - name: Build Vite renderer
-        run: npm run build:vite
+        run: pnpm run build:vite
 
       - name: TypeScript check (main process)
-        run: npx tsc -p tsconfig.main.json --noEmit
+        run: pnpm exec tsc -p tsconfig.main.json --noEmit
