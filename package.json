@@ -2,19 +2,14 @@
   "name": "interview-copilot",
   "version": "0.1.0",
   "private": true,
-  "description": "AI-powered stealth interview assistant",
-  "workspaces": [
-    "apps/desktop"
-  ],
+  "description": "Interview Copilot — monorepo root",
   "scripts": {
-    "dev": "npm run dev --workspace=apps/desktop",
-    "build": "npm run build --workspace=apps/desktop",
-    "test": "npm run test --workspace=apps/desktop",
-    "lint": "npm run lint --workspace=apps/desktop",
-    "typecheck": "npm run typecheck --workspace=apps/desktop"
+    "dev": "cd apps/desktop && npm run dev",
+    "build": "cd apps/desktop && npm run build",
+    "test": "cd apps/desktop && npm run test",
+    "lint": "cd apps/desktop && npm run lint"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "node": ">=20.0.0"
   }
 }

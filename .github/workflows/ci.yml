@@ -12,11 +12,15 @@ concurrency:
 
 env:
   NODE_VERSION: '20'
+  WORKING_DIR: apps/desktop
 
 jobs:
   lint-and-typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
     steps:
       - uses: actions/checkout@v4
 
@@ -25,25 +29,27 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install build tools (for native modules)
+      - name: Install build tools
         run: sudo apt-get install -y python3 make g++
+        working-directory: .
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
       - name: Run ESLint
-        working-directory: apps/desktop
-        run: npx --prefix ../../ eslint src --ext .ts,.tsx --max-warnings 0
+        run: npm run lint
 
       - name: Run TypeScript check
-        working-directory: apps/desktop
-        run: npx --prefix ../../ tsc --noEmit
+        run: npm run typecheck
 
   test:
     name: Tests & Coverage
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
     steps:
       - uses: actions/checkout@v4
 
@@ -52,23 +58,23 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install build tools (for native modules)
+      - name: Install build tools
         run: sudo apt-get install -y python3 make g++
+        working-directory: .
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
       - name: Run tests with coverage
-        working-directory: apps/desktop
-        run: npx --prefix ../../ vitest run --coverage
+        run: npm run test:coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: apps/desktop/coverage
+          directory: ${{ env.WORKING_DIR }}/coverage
           flags: desktop
           name: desktop-coverage
           fail_ci_if_error: false
@@ -77,12 +83,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: apps/desktop/coverage/
+          path: ${{ env.WORKING_DIR }}/coverage/
           retention-days: 7
 
   build:
     name: Build Check
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
     steps:
       - uses: actions/checkout@v4
 
@@ -91,18 +100,17 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install build tools (for native modules)
+      - name: Install build tools
         run: sudo apt-get install -y python3 make g++
+        working-directory: .
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
       - name: Build Vite renderer
-        working-directory: apps/desktop
-        run: npx --prefix ../../ vite build
+        run: npm run build:vite
 
       - name: TypeScript check (main process)
-        working-directory: apps/desktop
-        run: npx --prefix ../../ tsc -p tsconfig.main.json --noEmit
+        run: npx tsc -p tsconfig.main.json --noEmit
