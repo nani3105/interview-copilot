@@ -2,8 +2,8 @@
 
 > AI-powered stealth interview assistant — real-time answers, invisible to screen share.
 
-[![CI](https://github.com/YOUR_USERNAME/interview-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/interview-copilot/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/YOUR_USERNAME/interview-copilot/branch/main/graph/badge.svg)](https://codecov.io/gh/YOUR_USERNAME/interview-copilot)
+[![CI](https://github.com/nani3105/interview-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/nani3105/interview-copilot/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/nani3105/interview-copilot/branch/main/graph/badge.svg)](https://codecov.io/gh/nani3105/interview-copilot)
 
 ## Features
 
