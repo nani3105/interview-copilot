@@ -13,5 +13,6 @@
       "@shared/*": ["./src/shared/*"]
     }
   },
-  "include": ["src/main", "src/shared", "electron.d.ts"]
+  "include": ["src/main", "src/shared", "electron.d.ts"],
+  "exclude": ["src/**/__tests__/**", "src/**/*.test.ts", "src/**/*.test.tsx"]
 }
