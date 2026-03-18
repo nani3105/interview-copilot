@@ -11,8 +11,12 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: '24'
+  NODE_VERSION: '20'
   WORKING_DIR: apps/desktop
+  # Disable all postinstall/lifecycle scripts in CI
+  # This prevents native module compilation (canvas, better-sqlite3, electron, etc.)
+  # while STILL creating node_modules/.bin symlinks (bin linking ≠ lifecycle scripts)
+  npm_config_ignore_scripts: 'true'
 
 jobs:
   lint-and-typecheck:
@@ -31,8 +35,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install dependencies (skip Electron + native optional deps)
-        run: npm ci --omit=optional --legacy-peer-deps
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
 
       - name: Run ESLint
         run: npm run lint
@@ -56,8 +60,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install dependencies (skip Electron + native optional deps)
-        run: npm ci --omit=optional --legacy-peer-deps
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
 
       - name: Run tests with coverage
         run: npm run test:coverage
@@ -94,8 +98,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install dependencies (skip Electron + native optional deps)
-        run: npm ci --omit=optional --legacy-peer-deps
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
 
       - name: Build Vite renderer
         run: npm run build:vite
