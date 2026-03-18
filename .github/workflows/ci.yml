@@ -22,11 +22,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: apps/desktop/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        working-directory: apps/desktop
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run ESLint
         working-directory: apps/desktop
@@ -47,11 +46,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: apps/desktop/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        working-directory: apps/desktop
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run tests with coverage
         working-directory: apps/desktop
@@ -84,11 +82,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: apps/desktop/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        working-directory: apps/desktop
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build Vite (renderer)
         working-directory: apps/desktop

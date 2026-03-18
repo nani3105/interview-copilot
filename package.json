@@ -4,8 +4,7 @@
   "private": true,
   "description": "AI-powered stealth interview assistant",
   "workspaces": [
-    "apps/desktop",
-    "apps/backend-client"
+    "apps/desktop"
   ],
   "scripts": {
     "dev": "npm run dev --workspace=apps/desktop",
