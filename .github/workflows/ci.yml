@@ -13,10 +13,6 @@ concurrency:
 env:
   NODE_VERSION: '20'
   WORKING_DIR: apps/desktop
-  # Skip Electron binary download (not needed for lint/test/build)
-  ELECTRON_SKIP_BINARY_DOWNLOAD: 1
-  # Skip better-sqlite3 native compilation in CI
-  npm_config_build_from_source: false
 
 jobs:
   lint-and-typecheck:
@@ -35,19 +31,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install build tools
-        run: sudo apt-get install -y python3 make g++
-        working-directory: .
-
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-        env:
-          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
-
-      - name: Show crash log if install failed
-        if: failure()
-        run: find /home/runner/.npm/_logs -name "*.log" -exec tail -100 {} \;
-        working-directory: .
+      - name: Install dependencies (skip Electron + native optional deps)
+        run: npm ci --omit=optional --legacy-peer-deps
 
       - name: Run ESLint
         run: npm run lint
@@ -71,14 +56,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install build tools
-        run: sudo apt-get install -y python3 make g++
-        working-directory: .
-
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-        env:
-          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
+      - name: Install dependencies (skip Electron + native optional deps)
+        run: npm ci --omit=optional --legacy-peer-deps
 
       - name: Run tests with coverage
         run: npm run test:coverage
@@ -115,14 +94,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ${{ env.WORKING_DIR }}/package-lock.json
 
-      - name: Install build tools
-        run: sudo apt-get install -y python3 make g++
-        working-directory: .
-
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-        env:
-          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
+      - name: Install dependencies (skip Electron + native optional deps)
+        run: npm ci --omit=optional --legacy-peer-deps
 
       - name: Build Vite renderer
         run: npm run build:vite
