@@ -1,0 +1,86 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release-mac:
+    name: Build macOS Release
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/desktop
+        run: npm ci
+
+      - name: Build and package (macOS)
+        working-directory: apps/desktop
+        run: npm run package:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-release
+          path: apps/desktop/release/*.dmg
+
+  release-windows:
+    name: Build Windows Release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/desktop
+        run: npm ci
+
+      - name: Build and package (Windows)
+        working-directory: apps/desktop
+        run: npm run package:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: apps/desktop/release/*.exe
+
+  create-release:
+    name: Create GitHub Release
+    needs: [release-mac, release-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            macos-release/*.dmg
+            windows-release/*.exe
+          generate_release_notes: true
+          draft: true

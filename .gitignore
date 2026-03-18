@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+release/
+out/
+build/
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Electron
+*.dmg
+*.exe
+*.AppImage
+*.deb
+*.rpm
+*.snap
+
+# macOS
+.DS_Store
+*.plist
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3

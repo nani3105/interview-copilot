@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-typecheck:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/desktop
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: apps/desktop
+        run: npm run lint
+
+      - name: Run TypeScript check
+        working-directory: apps/desktop
+        run: npm run typecheck
+
+  test:
+    name: Tests & Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/desktop
+        run: npm ci
+
+      - name: Run tests with coverage
+        working-directory: apps/desktop
+        run: npm run test:coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: apps/desktop/coverage
+          flags: desktop
+          name: desktop-coverage
+          fail_ci_if_error: false
+
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: apps/desktop/coverage/
+          retention-days: 7
+
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/desktop
+        run: npm ci
+
+      - name: Build Vite (renderer)
+        working-directory: apps/desktop
+        run: npm run build:vite
+
+      - name: Build Electron main (type compile)
+        working-directory: apps/desktop
+        run: npx tsc -p tsconfig.main.json --noEmit

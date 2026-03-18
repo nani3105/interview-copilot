@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-navy-900 text-slate-100 font-sans antialiased;
+    user-select: none;
+    -webkit-app-region: no-drag;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-navy-800;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-navy-600 rounded-full;
+  }
+}
