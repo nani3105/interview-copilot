@@ -1,5 +1,10 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+
+type ElectronAPI = { setWindowSize?: (w: number, h: number) => void }
+function getAPI(): ElectronAPI {
+  return ((window as Record<string, unknown>).electronAPI as ElectronAPI) ?? {}
+}
 import { motion } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 
@@ -17,6 +22,10 @@ const ANIMATION_DURATION = 2.5
 
 export function SplashScreen() {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    getAPI().setWindowSize?.(440, 520)
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(

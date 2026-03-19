@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useWindowFit } from '../hooks/useWindowFit'
 import { ArrowLeft, Play } from 'lucide-react'
 
 export function JobContextScreen() {
   const navigate = useNavigate()
+  const rootRef = useWindowFit(460)
 
   const [company, setCompany] = useState('')
   const [companyError, setCompanyError] = useState('')
@@ -25,7 +27,7 @@ export function JobContextScreen() {
     'focus:border-primary focus:ring-2 focus:ring-primary/20'
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-navy-900 text-slate-100">
+    <div ref={rootRef} className="relative flex flex-col overflow-x-hidden bg-navy-900 text-slate-100">
       {/* Background glow */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute -right-1/4 -top-1/4 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[120px]" />

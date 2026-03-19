@@ -4,7 +4,7 @@ export function SettingsScreen() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex h-full flex-col p-6">
+    <div className="flex h-full flex-col bg-navy-900 p-6">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-white">Settings</h2>
         <button

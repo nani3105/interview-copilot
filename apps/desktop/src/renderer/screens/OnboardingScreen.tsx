@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useWindowFit } from '../hooks/useWindowFit'
 import {
   ArrowLeft,
   ArrowRight,
@@ -22,6 +23,7 @@ function formatFileSize(bytes: number): string {
 export function OnboardingScreen() {
   const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const rootRef = useWindowFit(460)
 
   const [name, setName] = useState('')
   const [nameError, setNameError] = useState('')
@@ -69,7 +71,7 @@ export function OnboardingScreen() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-navy-900 text-slate-100">
+    <div ref={rootRef} className="flex flex-col bg-navy-900 text-slate-100">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-primary/10 px-4 py-3">
         <div className="flex items-center gap-3">
@@ -97,7 +99,7 @@ export function OnboardingScreen() {
       </header>
 
       {/* Main */}
-      <main className="flex flex-1 flex-col items-center justify-center px-6 py-10">
+      <main className="px-6 py-10">
         <div className="w-full max-w-xl">
           {/* Heading */}
           <div className="mb-10">

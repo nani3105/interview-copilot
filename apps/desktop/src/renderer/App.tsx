@@ -8,7 +8,7 @@ import { SettingsScreen } from './screens/SettingsScreen'
 export function App() {
   return (
     <HashRouter>
-      <div className="h-screen w-screen overflow-hidden bg-navy-900">
+      <div className="h-screen w-screen overflow-hidden">
         <Routes>
           <Route path="/" element={<Navigate to="/splash" replace />} />
           <Route path="/splash" element={<SplashScreen />} />

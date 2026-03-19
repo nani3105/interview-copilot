@@ -3,8 +3,13 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    background: transparent;
+  }
+
   body {
-    @apply bg-navy-900 text-slate-100 font-sans antialiased;
+    @apply text-slate-100 font-sans antialiased;
+    background: transparent;
     user-select: none;
     -webkit-app-region: no-drag;
   }
