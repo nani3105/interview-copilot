@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
 
 type ElectronAPI = { setWindowSize?: (w: number, h: number) => void }
 function getAPI(): ElectronAPI {
-  return ((window as Record<string, unknown>).electronAPI as ElectronAPI) ?? {}
+  return ((window as unknown as Record<string, unknown>).electronAPI as ElectronAPI) ?? {}
 }
-import { motion } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
 
 const VERSION = 'v0.1.0'
 

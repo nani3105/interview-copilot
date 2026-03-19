@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 type ElectronAPI = { setWindowSize?: (w: number, h: number) => void }
 
 function getAPI(): ElectronAPI {
-  return ((window as Record<string, unknown>).electronAPI as ElectronAPI) ?? {}
+  return ((window as unknown as Record<string, unknown>).electronAPI as ElectronAPI) ?? {}
 }
 
 /**
